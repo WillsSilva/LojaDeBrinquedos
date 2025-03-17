@@ -1,4 +1,3 @@
-// src/components/FuncionarioForm.js
 import React, { useState } from 'react';
 import { criarFuncionario } from '../api';
 
@@ -8,6 +7,8 @@ const FuncionarioForm = ({ token }) => {
     nome: '',
     telefone: '',
     funcao: '',
+    username: '',
+    password: '',
   });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -21,8 +22,18 @@ const FuncionarioForm = ({ token }) => {
     try {
       const data = await criarFuncionario(token, funcionario);
       setMessage(data.mensagem);
+      setError('');
+      setFuncionario({
+        cpf: '',
+        nome: '',
+        telefone: '',
+        funcao: '',
+        username: '',
+        password: '',
+      });
     } catch (err) {
       setError(err.message);
+      setMessage('');
     }
   };
 
@@ -36,6 +47,7 @@ const FuncionarioForm = ({ token }) => {
           placeholder="CPF"
           value={funcionario.cpf}
           onChange={handleChange}
+          required
         />
         <input
           type="text"
@@ -43,6 +55,7 @@ const FuncionarioForm = ({ token }) => {
           placeholder="Nome"
           value={funcionario.nome}
           onChange={handleChange}
+          required
         />
         <input
           type="text"
@@ -50,6 +63,7 @@ const FuncionarioForm = ({ token }) => {
           placeholder="Telefone"
           value={funcionario.telefone}
           onChange={handleChange}
+          required
         />
         <input
           type="text"
@@ -57,6 +71,23 @@ const FuncionarioForm = ({ token }) => {
           placeholder="Função"
           value={funcionario.funcao}
           onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="username"
+          placeholder="Nome de usuário"
+          value={funcionario.username}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Senha"
+          value={funcionario.password}
+          onChange={handleChange}
+          required
         />
         <button type="submit">Cadastrar</button>
       </form>

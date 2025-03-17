@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
+from pymongo import MongoClient
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
@@ -18,17 +19,24 @@ fake_users_db = {
     }
 }
 
+# Conectar ao MongoDB
+client = MongoClient("mongodb://localhost:27017")
+db = client["locacao_brinquedos"]
+
 # Configuração de criptografia de senha
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
+    user = db.funcionarios.find_one({"username": username})
     if not user or not verify_password(password, user["password"]):
-        return False
+        return None  # Retorna None se a autenticação falhar
     return user
 
 def create_access_token(data: dict, expires_delta: timedelta):
