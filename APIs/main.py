@@ -25,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Modelos Pydantic
 class Funcionario(BaseModel):
     cpf: str
     nome: str
@@ -42,7 +41,15 @@ class FuncionarioResponse(BaseModel):
     telefone: str
 
     class Config:
-        orm_mode = True    
+        orm_mode = True 
+        
+class FuncionarioUpdate(BaseModel):
+    cpf: Optional[str] = None
+    nome: Optional[str] = None
+    telefone: Optional[str] = None
+    role: Optional[str] = None
+    username: Optional[str] = None
+    password: Optional[str] = None   
 
 # Endpoint para login e geração de token
 @app.post("/token")
@@ -63,8 +70,6 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "role": user["role"]
     }
 
-
-
 # Rota protegida: Apenas gerentes podem cadastrar funcionários
 @app.post("/funcionarios/")
 def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current_user)):
@@ -82,16 +87,54 @@ def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current
     db.funcionarios.insert_one(funcionario_dict)
     return {"mensagem": "Funcionário criado com sucesso"}
 
+
+@app.put("/funcionarios/{id}")
+def atualizar_funcionario(id: str, funcionario: FuncionarioUpdate, user: dict = Depends(get_current_user)):
+    # Verificar se o usuário tem permissão (somente gerentes podem atualizar funcionários)
+    if user["role"] != "gerente":
+        raise HTTPException(status_code=403, detail="Apenas gerentes podem atualizar funcionários")
+
+    # Verificar se o funcionário existe no banco de dados
+    existing_funcionario = db.funcionarios.find_one({"username": id})
+    if not existing_funcionario:
+        raise HTTPException(status_code=404, detail="Funcionário não encontrado")
+
+    if funcionario.username:
+        username_exists = db.funcionarios.find_one({"username": funcionario.username})
+        if username_exists and username_exists["_id"] != existing_funcionario["_id"]:
+            raise HTTPException(status_code=400, detail="Nome de usuário já está em uso")
+
+    update_data = {key: value for key, value in funcionario.dict(exclude_unset=True).items()}
+
+    # Se a senha for fornecida, deve ser alterada e hashada
+    if 'password' in update_data:
+        update_data["password"] = hash_password(update_data["password"])
+
+    db.funcionarios.update_one({"username": id}, {"$set": update_data})
+
+    return {"message": "Funcionário atualizado com sucesso", "funcionario": update_data}
+
+
+
 # Endpoint para listar funcionários (apenas para usuários autenticados)
 @app.get("/funcionarios/", response_model=List[FuncionarioResponse])
 def listar_funcionarios(user: dict = Depends(get_current_user)):
-    funcionarios = list(db.funcionarios.find({}, {"_id": 0}))  # Remove o campo '_id'
+    funcionarios = list(db.funcionarios.find({}, {"_id": 1, "cpf": 1, "nome": 1, "telefone": 1, "role": 1, "username": 1}))  # Inclui '_id'
     
     # Remover o campo 'password' explicitamente
     for funcionario in funcionarios:
         funcionario.pop("password", None)
+        funcionario['id'] = str(funcionario['_id'])
+        del funcionario['_id']
     
     return funcionarios
+
+@app.get("/funcionarios/{id}")
+def obter_funcionario(id: str, user: dict = Depends(get_current_user)):  
+    funcionario = db.funcionarios.find_one({"username": id}, {"_id": 0, "password": 0})  
+    if not funcionario:
+        raise HTTPException(status_code=404, detail="Funcionário não encontrado")
+    return funcionario
 
 # Testando a autenticação em uma rota protegida
 @app.get("/me")

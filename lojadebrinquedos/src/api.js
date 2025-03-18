@@ -53,3 +53,54 @@ export const criarFuncionario = async (token, funcionario) => {
 
   return response.json();
 };
+
+export const getFuncionarios = async () => {
+  const response = await fetch('http://localhost:8000/funcionarios/');
+  if (!response.ok) {
+    throw new Error('Erro ao carregar os funcionários');
+  }
+  return await response.json();
+};
+
+export const deleteFuncionario = async (id) => {
+  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Erro ao excluir funcionário');
+  }
+};
+
+export const atualizarFuncionario = async (id, token, funcionario) => {
+  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+    method: 'PUT', // Método PUT para atualização
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(funcionario),
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao atualizar funcionário');
+  }
+
+  return await response.json();
+};
+
+export const obterFuncionarioPorId = async (id, token) => {
+  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao obter funcionário');
+  }
+
+  return await response.json();
+};
+

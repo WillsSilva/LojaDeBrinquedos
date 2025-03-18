@@ -11,7 +11,6 @@ const Login = ({ setToken }) => {
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
-      console.log("Login realizado com sucesso:", data);
       setToken(data.access_token);
       localStorage.setItem("role", data.role);
       navigate('/menu');
