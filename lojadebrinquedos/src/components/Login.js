@@ -1,23 +1,26 @@
-// src/components/Login.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importando useNavigate
-import { login } from '../api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../api";
 
 const Login = ({ setToken }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); // Usando useNavigate
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
+      console.log("Login realizado com sucesso:", data);
       setToken(data.access_token);
-      navigate('/funcionarios'); // Usando navigate ao invés de history.push
+      localStorage.setItem("role", data.role);
+      navigate('/menu');
     } catch (err) {
       setError(err.message);
+      console.log("Erro no login:", err);
     }
   };
+  
 
   return (
     <div>
@@ -34,7 +37,7 @@ const Login = ({ setToken }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <button onClick={handleLogin}>Entrar</button>
     </div>
   );

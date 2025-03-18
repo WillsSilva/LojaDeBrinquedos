@@ -6,7 +6,7 @@ const FuncionarioForm = ({ token }) => {
     cpf: '',
     nome: '',
     telefone: '',
-    funcao: '',
+    role: '',
     username: '',
     password: '',
   });
@@ -27,7 +27,7 @@ const FuncionarioForm = ({ token }) => {
         cpf: '',
         nome: '',
         telefone: '',
-        funcao: '',
+        role: '',
         username: '',
         password: '',
       });
@@ -67,9 +67,9 @@ const FuncionarioForm = ({ token }) => {
         />
         <input
           type="text"
-          name="funcao"
+          name="role"
           placeholder="Função"
-          value={funcionario.funcao}
+          value={funcionario.role}
           onChange={handleChange}
           required
         />

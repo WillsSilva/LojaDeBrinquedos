@@ -57,7 +57,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "role": user["role"]
+    }
+
 
 
 # Rota protegida: Apenas gerentes podem cadastrar funcionários
