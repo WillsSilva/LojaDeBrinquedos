@@ -9,6 +9,16 @@ class Funcionario(BaseModel):
     role: str
     username: str
     password: str
+    
+class FuncionarioResponse(BaseModel):
+    username: str
+    role: str
+    cpf: str
+    nome: str
+    telefone: str
+
+    class Config:
+        orm_mode = True     
 
 class FuncionarioUpdate(BaseModel):
     cpf: Optional[str] = None
