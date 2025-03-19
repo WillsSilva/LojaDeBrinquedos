@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Menu from "./components/Menu";
 import FuncionarioList from "./components/FuncionarioList";
 import FuncionarioForm from "./components/FuncionarioForm";
+import BrinquedosList from "./components/BrinquedosList";
 
 const App = () => {
   // Recupera o token armazenado no localStorage, se existir
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/funcionarios" element={token ? <FuncionarioList token={token} /> : <Navigate to="/login" />} />
         <Route path="/cadastro" element={token ? <FuncionarioForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/editar/:id" element={token ? <FuncionarioForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/brinquedos" element={token ? <BrinquedosList token={token} /> : <Navigate to="/login" />} />
         
         {/* Redirecionando para o login por padrão */}
         <Route path="/" element={<Navigate to="/login" />} />

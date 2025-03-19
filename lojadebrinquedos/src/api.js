@@ -91,7 +91,6 @@ export const deleteFuncionario = async (id, token) => {
   }
 };
 
-
 export const atualizarFuncionario = async (id, token, funcionario) => {
   const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
     method: 'PUT',
@@ -123,5 +122,18 @@ export const obterFuncionarioPorId = async (id, token) => {
   }
 
   return await response.json();
+};
+
+export const listarBrinquedos = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/brinquedos/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao buscar brinquedos');
+  }
 };
 

@@ -28,11 +28,23 @@ const Menu = () => {
     gerente: [
       { name: "Gestão de Funcionários", path: "/funcionarios" },
       { name: "Cadastrar Funcionario", path: "/cadastro" },
-      { name: "Relatórios", path: "/relatorios" },
     ],
-    caixa: [
-      { name: "Registrar Venda", path: "/vendas" },
-      { name: "Consultar Produtos", path: "/produtos" },
+    Almoxarife: [
+      { name: "Lista de brinquedos", path: "/brinquedos" },
+      { name: "Tipos de brinquedos", path: "/vendas" },
+      { name: "Cadastrar brinquedos", path: "/produtos" },
+      { name: "Cadastrar tipos de brinquedos", path: "/produtos" },
+    ],
+    AnalistadeCadastro: [
+      { name: "Lista de clientes", path: "/vendas" },
+      { name: "Cadastrar clientes", path: "/vendas" },
+    ],
+    AgenteDeLocacao: [
+      { name: "Lista de locações", path: "/vendas" },
+      { name: "Cadastrar locações", path: "/vendas" },
+    ],
+    Caixa: [
+      { name: "Vendas", path: "/vendas" },
     ],
   };
 
@@ -55,7 +67,7 @@ const Menu = () => {
         display: "flex",
         flexDirection: "column",
       }}>
-        <h3>Menu</h3>
+        <h3>Menu </h3>
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {menus[role].map((menu, index) => (
             <li

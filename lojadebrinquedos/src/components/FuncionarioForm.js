@@ -127,14 +127,20 @@ const FuncionarioForm = ({ token }) => {
             onChange={handleChange}
             required
           />
-          <input
-            type="text"
+          <select
             name="role"
-            placeholder="Função"
             value={funcionario.role || ''}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="" disabled>Selecione uma função</option>
+            <option value="gerente">Gerente</option>
+            <option value="Caixa">Caixa</option>
+            <option value="Almoxarife">Almoxarife</option>
+            <option value="AnalistadeCadastro">Analista de cadastro</option>
+            <option value="AgenteDeLocacao">Agente de locação</option>
+            <option value="AnalistadeCadastro">Analista de cadastro</option>
+          </select>
           <input
             type="text"
             name="username"

@@ -1,47 +1,33 @@
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from pymongo import MongoClient
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from passlib.context import CryptContext
+from core.database import db
+from typing import Optional
 
-# Configurações do JWT
-SECRET_KEY = "chave_secreta_super_segura"
+SECRET_KEY = "chave_super_secreta"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Banco de usuários fictício (pode usar MongoDB depois)
-fake_users_db = {
-    "gerente": {
-        "username": "gerente",
-        "password": "$2b$12$apMADkPGIchXpoeueeF04uUZKlGHYMVjTAz0FlJVOplH5LNWEHaHa",  # Hash de "senha123"
-        "role": "gerente"
-    }
-}
-
-# Conectar ao MongoDB
-client = MongoClient("mongodb://localhost:27017")
-db = client["locacao_brinquedos"]
-
-# Configuração de criptografia de senha
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 def authenticate_user(username: str, password: str):
     user = db.funcionarios.find_one({"username": username})
     if not user or not verify_password(password, user["password"]):
-        return None  # Retorna None se a autenticação falhar
+        return None
     return user
 
-def create_access_token(data: dict, expires_delta: timedelta):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
