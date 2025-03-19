@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { criarFuncionario, atualizarFuncionario, obterFuncionarioPorId, listarFuncionarios } from '../api';
+import Menu from './Menu';
 
 const FuncionarioForm = ({ token }) => {
   const { id } = useParams();
@@ -94,62 +95,68 @@ const FuncionarioForm = ({ token }) => {
   };
 
   return (
-    <div>
-      <h2>{id ? 'Editar Funcionário' : 'Cadastrar Funcionário'}</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="cpf"
-          placeholder="CPF"
-          value={funcionario.cpf || ''}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="nome"
-          placeholder="Nome"
-          value={funcionario.nome || ''}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="telefone"
-          placeholder="Telefone"
-          value={funcionario.telefone || ''}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="role"
-          placeholder="Função"
-          value={funcionario.role || ''}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="username"
-          placeholder="Nome de usuário"
-          value={funcionario.username || ''}
-          onChange={handleChange}
-          required
-          disabled={id ? true : false} // Impede edição do username após cadastro
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Senha"
-          value={funcionario.password || ''}
-          onChange={handleChange}
-          required={!id}
-        />
-        <button type="submit">{id ? 'Atualizar' : 'Cadastrar'}</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Menu Lateral */}
+      <Menu />
+
+      {/* Formulário de Cadastro */}
+      <div style={{ flexGrow: 1, padding: '20px' }}>
+        <h2>{id ? 'Editar Funcionário' : 'Cadastrar Funcionário'}</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="cpf"
+            placeholder="CPF"
+            value={funcionario.cpf || ''}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="nome"
+            placeholder="Nome"
+            value={funcionario.nome || ''}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="telefone"
+            placeholder="Telefone"
+            value={funcionario.telefone || ''}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="role"
+            placeholder="Função"
+            value={funcionario.role || ''}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="username"
+            placeholder="Nome de usuário"
+            value={funcionario.username || ''}
+            onChange={handleChange}
+            required
+            disabled={id ? true : false} // Impede edição do username após cadastro
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Senha"
+            value={funcionario.password || ''}
+            onChange={handleChange}
+            required={!id}
+          />
+          <button type="submit">{id ? 'Atualizar' : 'Cadastrar'}</button>
+        </form>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {message && <p style={{ color: 'green' }}>{message}</p>}
+      </div>
     </div>
   );
 };
