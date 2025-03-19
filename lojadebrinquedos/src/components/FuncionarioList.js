@@ -22,11 +22,18 @@ const FuncionarioList = ({ token }) => {
 
   // Função para excluir funcionário
   const handleDelete = async (id) => {
+
+    if (!token) {
+      alert("Erro: usuário não autenticado.");
+      return;
+    }
+  
     try {
-      await deleteFuncionario(id); // Faz requisição à API
-      setFuncionarios((prev) => prev.filter(func => func.id !== id)); // Atualiza a lista sem o funcionário excluído
-    } catch (err) {
-      setError('Erro ao excluir funcionário');
+      await deleteFuncionario(id, token);
+      alert("Funcionário excluído com sucesso!");
+      window.location.reload();
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -44,7 +51,7 @@ const FuncionarioList = ({ token }) => {
           <li key={funcionario.username}>  {/* A chave aqui deve ser única */}
             {funcionario.nome}
             <button onClick={() => handleEdit(funcionario.username)}>Editar</button>
-            <button onClick={() => handleDelete(funcionario.id)}>Excluir</button>
+            <button onClick={() => handleDelete(funcionario.username)}>Excluir</button>
           </li>
         ))}
       </ul>

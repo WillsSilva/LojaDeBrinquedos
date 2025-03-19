@@ -11,8 +11,11 @@ const Login = ({ setToken }) => {
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
-      setToken(data.access_token);
+      
       localStorage.setItem("role", data.role);
+      localStorage.setItem("token", data.access_token);
+      
+      setToken(data.access_token);
       navigate('/menu');
     } catch (err) {
       setError(err.message);

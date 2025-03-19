@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Menu from "./components/Menu";
@@ -7,7 +6,16 @@ import FuncionarioList from "./components/FuncionarioList";
 import FuncionarioForm from "./components/FuncionarioForm";
 
 const App = () => {
-  const [token, setToken] = useState("");
+  // Recupera o token armazenado no localStorage, se existir
+  const storedToken = localStorage.getItem("token");
+
+  const [token, setToken] = useState(storedToken || ""); 
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token); // Armazena o token no localStorage
+    }
+  }, [token]);
 
   return (
     <Router>

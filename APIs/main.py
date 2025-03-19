@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from auth import get_current_user, create_access_token, authenticate_user, hash_password
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from bson import ObjectId
 
 app = FastAPI()
 
@@ -80,7 +81,6 @@ def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current
     if db.funcionarios.find_one({"username": funcionario.username}):
         raise HTTPException(status_code=400, detail="Nome de usuário já está em uso")
 
-    # Hash da senha antes de armazenar
     funcionario_dict = funcionario.dict()
     funcionario_dict["password"] = hash_password(funcionario.password)
 
@@ -90,7 +90,7 @@ def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current
 
 @app.put("/funcionarios/{id}")
 def atualizar_funcionario(id: str, funcionario: FuncionarioUpdate, user: dict = Depends(get_current_user)):
-    # Verificar se o usuário tem permissão (somente gerentes podem atualizar funcionários)
+    
     if user["role"] != "gerente":
         raise HTTPException(status_code=403, detail="Apenas gerentes podem atualizar funcionários")
 
@@ -115,6 +115,19 @@ def atualizar_funcionario(id: str, funcionario: FuncionarioUpdate, user: dict = 
     return {"message": "Funcionário atualizado com sucesso", "funcionario": update_data}
 
 
+@app.delete("/funcionarios/{id}")
+def deletar_funcionario(id: str, user: dict = Depends(get_current_user)):
+
+    if user.get("role") != "gerente":
+        raise HTTPException(status_code=403, detail="Apenas gerentes podem excluir funcionários")
+
+    funcionario = db.funcionarios.find_one({"username": id})
+    if not funcionario:
+        raise HTTPException(status_code=404, detail="Funcionário não encontrado")
+
+    # Exclui o funcionário
+    db.funcionarios.delete_one({"username": id})
+    return {"mensagem": "Funcionário deletado com sucesso"}
 
 # Endpoint para listar funcionários (apenas para usuários autenticados)
 @app.get("/funcionarios/", response_model=List[FuncionarioResponse])

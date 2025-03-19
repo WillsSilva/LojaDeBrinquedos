@@ -15,7 +15,7 @@ export const login = async (username, password) => {
       },
     });
     
-    return response.data; // Retorna os dados da resposta (token)
+    return response.data; 
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     throw new Error('Falha ao realizar login. Tente novamente!');
@@ -62,18 +62,39 @@ export const getFuncionarios = async () => {
   return await response.json();
 };
 
-export const deleteFuncionario = async (id) => {
-  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) {
-    throw new Error('Erro ao excluir funcionário');
+export const deleteFuncionario = async (id, token) => {
+  if (!token) {
+    throw new Error("Token de autenticação ausente");
+  }
+
+  try {
+    console.log(localStorage.getItem("token"));
+
+    const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Erro ao excluir funcionário");
+    }
+
+    return { message: "Funcionário deletado com sucesso!" };
+
+  } catch (error) {
+    console.error("Erro ao excluir funcionário:", error.message);
+    throw error;
   }
 };
 
+
 export const atualizarFuncionario = async (id, token, funcionario) => {
   const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
-    method: 'PUT', // Método PUT para atualização
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
