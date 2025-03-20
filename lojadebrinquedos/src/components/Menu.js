@@ -27,13 +27,13 @@ const Menu = () => {
   const menus = {
     gerente: [
       { name: "Gestão de Funcionários", path: "/funcionarios" },
-      { name: "Cadastrar Funcionario", path: "/cadastro" },
+      { name: "Cadastrar Funcionario", path: "/cadastro/funcionario" },
     ],
     Almoxarife: [
       { name: "Lista de brinquedos", path: "/brinquedos" },
-      { name: "Tipos de brinquedos", path: "/vendas" },
+      { name: "Tipos de brinquedos", path: "/tipos" },
       { name: "Cadastrar brinquedos", path: "/produtos" },
-      { name: "Cadastrar tipos de brinquedos", path: "/produtos" },
+      { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo" },
     ],
     AnalistadeCadastro: [
       { name: "Lista de clientes", path: "/vendas" },

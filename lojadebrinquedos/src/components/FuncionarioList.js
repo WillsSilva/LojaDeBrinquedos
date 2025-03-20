@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando useNavigate
-import { listarFuncionarios, deleteFuncionario } from '../api'; // Certifique-se de importar corretamente
+import { listarFuncionarios, deleteFuncionario } from '../API/APIFuncionarios'; // Certifique-se de importar corretamente
 import Menu from './Menu';
 
 const FuncionarioList = ({ token }) => {

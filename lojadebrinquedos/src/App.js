@@ -5,6 +5,8 @@ import Menu from "./components/Menu";
 import FuncionarioList from "./components/FuncionarioList";
 import FuncionarioForm from "./components/FuncionarioForm";
 import BrinquedosList from "./components/BrinquedosList";
+import TipoBrinquedoForm from "./components/TipoBrinquedosForm";
+import TipoBrinquedoList from "./components/TipoBrinquedosList";
 
 const App = () => {
   // Recupera o token armazenado no localStorage, se existir
@@ -26,9 +28,12 @@ const App = () => {
         {/* Proteção de rotas - só acessa se estiver logado */}
         <Route path="/menu" element={token ? <Menu /> : <Navigate to="/login" />} />
         <Route path="/funcionarios" element={token ? <FuncionarioList token={token} /> : <Navigate to="/login" />} />
-        <Route path="/cadastro" element={token ? <FuncionarioForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/cadastro/funcionario" element={token ? <FuncionarioForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/editar/:id" element={token ? <FuncionarioForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/brinquedos" element={token ? <BrinquedosList token={token} /> : <Navigate to="/login" />} />
+        <Route path="/cadastro/tipo" element={token ? <TipoBrinquedoForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/editar-tipo-brinquedo/:id" element={token ? <TipoBrinquedoForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/tipos" element={token ? <TipoBrinquedoList token={token} /> : <Navigate to="/login" />} />
         
         {/* Redirecionando para o login por padrão */}
         <Route path="/" element={<Navigate to="/login" />} />

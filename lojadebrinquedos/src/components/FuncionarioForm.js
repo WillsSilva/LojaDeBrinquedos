@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { criarFuncionario, atualizarFuncionario, obterFuncionarioPorId, listarFuncionarios } from '../api';
+import { criarFuncionario, atualizarFuncionario, obterFuncionarioPorId, listarFuncionarios } from '../API/APIFuncionarios';
 import Menu from './Menu';
 
 const FuncionarioForm = ({ token }) => {

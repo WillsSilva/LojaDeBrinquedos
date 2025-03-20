@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando useNavigate
-import { listarBrinquedos, deleteFuncionario } from '../api'; // Certifique-se de importar corretamente
+import { listarBrinquedos } from '../API/APIBrinquedos'; // Certifique-se de importar corretamente
 import Menu from './Menu';
 
 const BrinquedosList = ({ token }) => {
@@ -30,7 +30,7 @@ const BrinquedosList = ({ token }) => {
     }
   
     try {
-      await deleteFuncionario(id, token);
+      // await deleteFuncionario(id, token);
       alert("Brinquedo excluído com sucesso!");
       window.location.reload();
     } catch (error) {

@@ -18,7 +18,7 @@ class FuncionarioResponse(BaseModel):
     telefone: str
 
     class Config:
-        orm_mode = True     
+        from_attributes = True     
 
 class FuncionarioUpdate(BaseModel):
     cpf: Optional[str] = None
