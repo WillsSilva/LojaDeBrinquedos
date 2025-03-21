@@ -49,13 +49,11 @@ const TipoBrinquedoForm = ({ token, userRole }) => {
     setTipoBrinquedo({ ...tipoBrinquedo, [e.target.name]: e.target.value });
   };
 
-  // Verificar duplicidade do nome
   const nomeExists = (nome) => existingNomes.includes(nome);
 
   // Submissão do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Enviando para API:", tipoBrinquedo); // Verifique o que está sendo enviado para a API
   
     if (!tipoBrinquedo.nome) {
       setError("Por favor, preencha o nome do tipo de brinquedo.");
@@ -77,7 +75,7 @@ const TipoBrinquedoForm = ({ token, userRole }) => {
         setTipoBrinquedo({ nome: "" });
       }
       setError("");
-      setTimeout(() => navigate("/tipos-brinquedos"), 2000);
+      setTimeout(() => navigate("/tipos"), 2000);
     } catch (err) {
       setError(err.message);
       setMessage("");

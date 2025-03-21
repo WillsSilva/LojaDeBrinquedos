@@ -1,65 +1,92 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importando useNavigate
-import { listarBrinquedos } from '../API/APIBrinquedos'; // Certifique-se de importar corretamente
-import Menu from './Menu';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { listarBrinquedos, deletarBrinquedo } from "../API/APIBrinquedos";
+import { listarTiposBrinquedos } from "../API/APITiposBrinquedos";
+import Menu from "./Menu";
 
 const BrinquedosList = ({ token }) => {
-  const [brinquedo, setBrinquedos] = useState([]);
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); // Criando o hook para navegação
+  const [brinquedos, setBrinquedos] = useState([]);
+  const [tipos, setTipos] = useState({}); 
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    const fetchBrinquedos = async () => {
+    const fetchData = async () => {
       try {
-        const data = await listarBrinquedos(token);
-        setBrinquedos(data);
-      } catch (err) {
-        setError(err.message);
+        const brinquedosData = await listarBrinquedos(token);
+        const tiposData = await listarTiposBrinquedos(token);
+        
+        const tiposMap = {};
+        tiposData.forEach(tipo => {
+          tiposMap[tipo.codigoUnico] = tipo.nome;
+        });
+
+        setBrinquedos(brinquedosData);
+        setTipos(tiposMap);
+      } catch (error) {
+        console.error("Erro ao buscar brinquedos:", error);
       }
     };
 
-    fetchBrinquedos();
+    fetchData();
   }, [token]);
 
-  // Função para excluir funcionário
+  // Função para excluir brinquedo
   const handleDelete = async (id) => {
-
     if (!token) {
       alert("Erro: usuário não autenticado.");
       return;
     }
   
+    if (!window.confirm("Tem certeza que deseja excluir este brinquedo?")) {
+      return;
+    }
+
     try {
-      // await deleteFuncionario(id, token);
+      await deletarBrinquedo(id, token);
       alert("Brinquedo excluído com sucesso!");
-      window.location.reload();
+      setBrinquedos(brinquedos.filter(brinquedo => brinquedo.codigoUnico !== id));
     } catch (error) {
-      alert(error.message);
+      alert("Erro ao excluir brinquedo: " + error.message);
     }
   };
 
-  // Função para editar funcionário
+  // Função para editar brinquedo
   const handleEdit = (id) => {
-    navigate(`/editar/${id}`); // Redireciona para a tela de edição do funcionário
-  };
+    navigate(`/editar-brinquedo/${id}`);
+  };  
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Menu Lateral */}
+    <div style={{ display: "flex", minHeight: "100vh" }}>
       <Menu />
-
-      <div style={{ flexGrow: 1, padding: '20px' }}>
-        <h2>Brinquedos</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <ul>
-          {brinquedo.map((funcionario) => (
-            <li key={brinquedo.codigoUnico}>  {/* A chave aqui deve ser única */}
-              {brinquedo.nome + ' - ' + brinquedo.tipo}
-              <button onClick={() => handleEdit(brinquedo.codigoUnico)}>Editar</button>
-              <button onClick={() => handleDelete(brinquedo.codigoUnico)}>Excluir</button>
-            </li>
-          ))}
-        </ul>
+      <div style={{ flexGrow: 1, padding: "20px" }}>
+        <h2>Lista de Brinquedos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome</th>
+              <th>Tipo</th>
+              <th>Marca</th>
+              <th>Valor Locação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {brinquedos.map((brinquedo) => (
+              <tr key={brinquedo.codigoUnico}>
+                <td>{brinquedo.codigoUnico}</td>
+                <td>{brinquedo.nome || "Sem nome"}</td>
+                <td>{tipos[brinquedo.tipoBrinquedo] || "Tipo desconhecido"}</td>
+                <td>{brinquedo.marca || "Sem marca"}</td>
+                <td>R$ {brinquedo.vlLocacao?.toFixed(2)}</td>
+                <td>
+                  <button onClick={() => handleEdit(brinquedo.codigoUnico)}>Editar</button>
+                  <button onClick={() => handleDelete(brinquedo.codigoUnico)}>Excluir</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ class FuncionarioUpdate(BaseModel):
     password: Optional[str] = None  
 
 class Brinquedo(BaseModel):
-    codigoUnico: Optional[int]
+    codigoUnico: Optional[int] = None
     nome: str
     tipoBrinquedo: int
     marca: str
@@ -37,5 +37,5 @@ class Brinquedo(BaseModel):
     vlLocacao: float
 
 class TipoBrinquedo(BaseModel):
-    codigoUnico: Optional[int]
+    codigoUnico: Optional[int] = None
     nome: str

@@ -9,23 +9,24 @@ router = APIRouter()
 # Rota para criar um brinquedo (apenas almoxarifes)
 @router.post("/")
 def criar_brinquedo(brinquedo: Brinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "almoxarife":
+    if user["role"] != "Almoxarife":
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem cadastrar brinquedos")
 
-    # Verificar se o brinquedo já existe pelo código único
-    if db.brinquedos.find_one({"codigoUnico": brinquedo.codigoUnico}):
-        raise HTTPException(status_code=400, detail="Já existe um brinquedo com esse código único")
+    ultimo_brinquedo = db.brinquedos.find_one(sort=[("codigoUnico", -1)])
+    novo_codigo = (ultimo_brinquedo["codigoUnico"] + 1) if ultimo_brinquedo else 1
 
-    brinquedo_dict = brinquedo.dict()
+    brinquedo_dict = brinquedo.dict(exclude={"codigoUnico"})
+    brinquedo_dict["codigoUnico"] = novo_codigo
+
     db.brinquedos.insert_one(brinquedo_dict)
-    
-    return {"mensagem": "Brinquedo cadastrado com sucesso!"}
+
+    return {"mensagem": "Brinquedo cadastrado com sucesso!", "codigoUnico": novo_codigo}
 
 
 # Rota para atualizar um brinquedo (apenas almoxarifes)
 @router.put("/{id}")
 def atualizar_brinquedo(id: str, brinquedo: Brinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "almoxarife":
+    if user["role"] != "Almoxarife":
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem atualizar brinquedos")
 
     existing_brinquedo = db.brinquedos.find_one({"codigoUnico": int(id)})

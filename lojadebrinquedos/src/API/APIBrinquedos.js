@@ -1,53 +1,68 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'http://localhost:8000';
+const API_URL = "http://localhost:8000/brinquedos";
 
+// Criar Brinquedo
+export const criarBrinquedo = async (token, brinquedo) => {
+  try {
+    const response = await axios.post(`${API_URL}/`, brinquedo, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Erro ao cadastrar brinquedo");
+  }
+};
+
+// Listar Brinquedos
 export const listarBrinquedos = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Erro ao buscar brinquedos");
+  }
+};
+
+// Obter Brinquedo por ID
+export const obterBrinquedoPorId = async (id, token) => {
+  try {
+    const response = await axios.get(`${API_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Erro ao obter brinquedo");
+  }
+};
+
+// Atualizar Brinquedo
+export const atualizarBrinquedo = async (id, token, brinquedo) => {
+  try {
+    const response = await axios.put(`${API_URL}/${id}`, brinquedo, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Erro ao atualizar brinquedo");
+  }
+};
+
+export const deletarBrinquedo = async (id, token) => {
     try {
-      const response = await axios.get(`${API_URL}/brinquedos/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.delete(`${API_URL}/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error) {
-      throw new Error('Erro ao buscar brinquedos');
+      throw new Error(error.response?.data?.detail || "Erro ao excluir tipo de brinquedo");
     }
-  };
-
-// Função para criar um novo Tipo de Brinquedo
-export const criarBrinquedo = async (token, brinquedo) => {
-  const response = await fetch('http://localhost:8000/brinquedos/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(brinquedo),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.detail || 'Erro ao cadastrar brinquedo');
-  }
-
-  return response.json();
-};
-
-export const criarTipoBrinquedo = async (token, TipoBrinquedo) => {    
-    const response = await fetch('http://localhost:8000/tipos_brinquedos/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(TipoBrinquedo),
-    });
-  
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Erro ao cadastrar tipo de brinquedo');
-    }
-  
-    return response.json();
   };

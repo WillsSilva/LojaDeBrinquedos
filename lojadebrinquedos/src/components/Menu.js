@@ -32,7 +32,7 @@ const Menu = () => {
     Almoxarife: [
       { name: "Lista de brinquedos", path: "/brinquedos" },
       { name: "Tipos de brinquedos", path: "/tipos" },
-      { name: "Cadastrar brinquedos", path: "/produtos" },
+      { name: "Cadastrar brinquedos", path: "/cadastro/brinquedo" },
       { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo" },
     ],
     AnalistadeCadastro: [

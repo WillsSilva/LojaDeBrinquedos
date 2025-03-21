@@ -60,7 +60,6 @@ def deletar_funcionario(id: str, user: dict = Depends(get_current_user)):
     if not funcionario:
         raise HTTPException(status_code=404, detail="Funcionário não encontrado")
 
-    # Exclui o funcionário
     db.funcionarios.delete_one({"username": id})
     return {"mensagem": "Funcionário deletado com sucesso"}
 

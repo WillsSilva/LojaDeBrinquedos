@@ -29,18 +29,20 @@ const FuncionarioList = ({ token }) => {
       return;
     }
   
-    try {
-      await deleteFuncionario(id, token);
-      alert("Funcionário excluído com sucesso!");
-      window.location.reload();
-    } catch (error) {
-      alert(error.message);
+    if (window.confirm("Tem certeza que deseja excluir este funcionário?")) {    
+      try {
+        await deleteFuncionario(id, token);
+        alert("Funcionário excluído com sucesso!");
+        window.location.reload();
+      } catch (error) {
+        alert(error.message);
+      }
     }
   };
 
   // Função para editar funcionário
   const handleEdit = (id) => {
-    navigate(`/editar/${id}`); // Redireciona para a tela de edição do funcionário
+    navigate(`/editar/${id}`);
   };
 
   return (
