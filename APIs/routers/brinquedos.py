@@ -48,3 +48,16 @@ def obter_brinquedo(id: str, user: dict = Depends(get_current_user)):
     if not brinquedo:
         raise HTTPException(status_code=404, detail="Brinquedo não encontrado")
     return brinquedo
+
+@router.delete("/{id}")
+def deletar_brinquedo(id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != "Almoxarife":
+        raise HTTPException(status_code=403, detail="Apenas almoxarifes podem deletar tipos de brinquedos")
+
+    existing_brinquedo = db.brinquedos.find_one({"codigoUnico": int(id)})
+    if not existing_brinquedo:
+        raise HTTPException(status_code=404, detail="Tipo de brinquedo não encontrado")
+
+    db.brinquedos.delete_one({"codigoUnico": int(id)})
+
+    return {"mensagem": "Brinquedo deletado com sucesso!"}
