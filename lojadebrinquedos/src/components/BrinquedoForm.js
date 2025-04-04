@@ -65,8 +65,8 @@ const BrinquedoForm = ({ token }) => {
 
   // Manipular seleção do tipo de brinquedo
   const handleTipoChange = (e) => {
-    const tipoSelecionado = tiposBrinquedos.find(tipo => tipo.codigoUnico === parseInt(e.target.value));
-    setBrinquedo({ ...brinquedo, tipoBrinquedo: tipoSelecionado.codigoUnico });
+    const tipoSelecionado = tiposBrinquedos.find(tipo => tipo.ID === parseInt(e.target.value));
+    setBrinquedo({ ...brinquedo, tipoBrinquedo: tipoSelecionado.ID });
   };
 
   // Submeter formulário
@@ -112,7 +112,7 @@ const BrinquedoForm = ({ token }) => {
           <select name="tipoBrinquedo" value={brinquedo.tipoBrinquedo} onChange={handleTipoChange} required>
             <option value="">Selecione o Tipo</option>
             {tiposBrinquedos.map((tipo) => (
-              <option key={tipo.codigoUnico} value={tipo.codigoUnico}>
+              <option key={tipo.ID} value={tipo.ID}>
                 {tipo.nome}
               </option>
             ))}

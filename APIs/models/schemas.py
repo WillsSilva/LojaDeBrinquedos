@@ -29,7 +29,7 @@ class FuncionarioUpdate(BaseModel):
     password: Optional[str] = None  
 
 class Brinquedo(BaseModel):
-    codigoUnico: Optional[int] = None
+    ID: Optional[int] = None
     nome: str
     tipoBrinquedo: int
     marca: str
@@ -37,5 +37,19 @@ class Brinquedo(BaseModel):
     vlLocacao: float
 
 class TipoBrinquedo(BaseModel):
-    codigoUnico: Optional[int] = None
+    ID: Optional[int] = None
     nome: str
+    
+class Cliente(BaseModel):
+    cpf: str
+    nome: str
+    endereco: str
+    dataNasc: datetime
+    telefone: str
+    
+class ClienteUpdate(BaseModel):
+    cpf: Optional[str] = None
+    nome: Optional[str] = None
+    endereco: Optional[str] = None
+    dataNasc: Optional[datetime] = None
+    telefone: Optional[str] = None

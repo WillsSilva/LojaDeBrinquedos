@@ -36,8 +36,8 @@ const Menu = () => {
       { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo" },
     ],
     AnalistadeCadastro: [
-      { name: "Lista de clientes", path: "/vendas" },
-      { name: "Cadastrar clientes", path: "/vendas" },
+      { name: "Lista de clientes", path: "/clientes" },
+      { name: "Cadastrar clientes", path: "/cadastrar-cliente" },
     ],
     AgenteDeLocacao: [
       { name: "Lista de locações", path: "/vendas" },

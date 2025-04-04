@@ -8,6 +8,9 @@ import BrinquedosList from "./components/BrinquedosList";
 import TipoBrinquedoForm from "./components/TipoBrinquedosForm";
 import TipoBrinquedoList from "./components/TipoBrinquedosList";
 import BrinquedoForm from "./components/BrinquedoForm";
+import ClientesList from "./components/ClientesList";
+import ClienteForm from "./components/ClienteForm";
+
 
 const App = () => {
   // Recupera o token armazenado no localStorage, se existir
@@ -37,6 +40,9 @@ const App = () => {
         <Route path="/tipos" element={token ? <TipoBrinquedoList token={token} /> : <Navigate to="/login" />} />
         <Route path="/cadastro/brinquedo" element={token ? <BrinquedoForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/editar-brinquedo/:id" element={token ? <BrinquedoForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/clientes" element={token ? <ClientesList token={token} /> : <Navigate to="/login" />} />
+        <Route path="/cadastrar-cliente" element={token ? <ClienteForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/cadastrar-cliente/:id" element={token ? <ClienteForm token={token} /> : <Navigate to="/login" />} />        
         
         {/* Redirecionando para o login por padrão */}
         <Route path="/" element={<Navigate to="/login" />} />

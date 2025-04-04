@@ -17,7 +17,7 @@ const BrinquedosList = ({ token }) => {
         
         const tiposMap = {};
         tiposData.forEach(tipo => {
-          tiposMap[tipo.codigoUnico] = tipo.nome;
+          tiposMap[tipo.ID] = tipo.nome;
         });
 
         setBrinquedos(brinquedosData);
@@ -44,7 +44,7 @@ const BrinquedosList = ({ token }) => {
     try {
       await deletarBrinquedo(id, token);
       alert("Brinquedo excluído com sucesso!");
-      setBrinquedos(brinquedos.filter(brinquedo => brinquedo.codigoUnico !== id));
+      setBrinquedos(brinquedos.filter(brinquedo => brinquedo.ID !== id));
     } catch (error) {
       alert("Erro ao excluir brinquedo: " + error.message);
     }
@@ -73,15 +73,15 @@ const BrinquedosList = ({ token }) => {
           </thead>
           <tbody>
             {brinquedos.map((brinquedo) => (
-              <tr key={brinquedo.codigoUnico}>
-                <td>{brinquedo.codigoUnico}</td>
+              <tr key={brinquedo.ID}>
+                <td>{brinquedo.ID}</td>
                 <td>{brinquedo.nome || "Sem nome"}</td>
                 <td>{tipos[brinquedo.tipoBrinquedo] || "Tipo desconhecido"}</td>
                 <td>{brinquedo.marca || "Sem marca"}</td>
                 <td>R$ {brinquedo.vlLocacao?.toFixed(2)}</td>
                 <td>
-                  <button onClick={() => handleEdit(brinquedo.codigoUnico)}>Editar</button>
-                  <button onClick={() => handleDelete(brinquedo.codigoUnico)}>Excluir</button>
+                  <button onClick={() => handleEdit(brinquedo.ID)}>Editar</button>
+                  <button onClick={() => handleDelete(brinquedo.ID)}>Excluir</button>
                 </td>
               </tr>
             ))}

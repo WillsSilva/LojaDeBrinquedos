@@ -32,7 +32,7 @@ const TipoBrinquedoList = ({ token }) => {
       try {
         await deletarTipoBrinquedo(id, token);
         alert("Tipo de brinquedo excluído com sucesso!");
-        setTiposBrinquedos(tiposBrinquedos.filter(tipo => tipo.codigoUnico !== id));
+        setTiposBrinquedos(tiposBrinquedos.filter(tipo => tipo.ID !== id));
       } catch (error) {
         alert(error.message);
       }
@@ -54,10 +54,10 @@ const TipoBrinquedoList = ({ token }) => {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <ul>
           {tiposBrinquedos.map((tipo) => (
-            <li key={tipo.codigoUnico + tipo.nome}>
+            <li key={tipo.ID + tipo.nome}>
               {tipo.nome}
-              <button onClick={() => handleEdit(tipo.codigoUnico)}>Editar</button>
-              <button onClick={() => handleDelete(tipo.codigoUnico)}>Excluir</button>
+              <button onClick={() => handleEdit(tipo.ID)}>Editar</button>
+              <button onClick={() => handleDelete(tipo.ID)}>Excluir</button>
             </li>
           ))}
         </ul>
