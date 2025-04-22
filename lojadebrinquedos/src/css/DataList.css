@@ -1,0 +1,241 @@
+/* Estilos reutilizáveis para listas de dados */
+
+/* Container da página */
+.page-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Container do conteúdo principal */
+.content-container {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Cabeçalho do conteúdo */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.content-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Container da lista de dados */
+.data-list-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* Lista de dados */
+.data-list {
+  width: 100%;
+  display: table;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Cabeçalho da lista */
+.data-list-header {
+  display: table-row;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Linha de dados */
+.data-row {
+  display: table-row;
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.1s;
+}
+
+.data-row:last-child {
+  border-bottom: none;
+}
+
+.data-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* Célula de dados */
+.data-cell {
+  display: table-cell;
+  padding: 8px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Definição de larguras específicas para colunas comuns */
+.data-list-header .data-cell:nth-child(1),
+.data-row .data-cell:nth-child(1) {
+  width: 10%; /* Código/ID */
+}
+
+.data-list-header .data-cell:nth-child(2),
+.data-row .data-cell:nth-child(2) {
+  width: 25%; /* Nome */
+}
+
+/* Célula de ações */
+.data-cell.actions {
+  width: 15%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Botões de ação */
+.action-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-left: 8px;
+}
+
+.action-button:first-child {
+  margin-left: 0;
+}
+
+.action-button:active {
+  transform: translateY(1px);
+}
+
+.action-button.primary {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.action-button.primary:hover {
+  background-color: #3a7bc8;
+}
+
+.action-button.edit {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.action-button.edit:hover {
+  background-color: #e9ecef;
+}
+
+.action-button.delete {
+  background-color: #fff5f5;
+  color: #e74c3c;
+  border: 1px solid #fad2d2;
+}
+
+.action-button.delete:hover {
+  background-color: #ffe3e3;
+}
+
+/* Mensagem de erro */
+.error-message {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #fff5f5;
+  border: 1px solid #fad2d2;
+  border-radius: 4px;
+  color: #e74c3c;
+  margin-bottom: 16px;
+}
+
+.error-icon {
+  margin-right: 8px;
+}
+
+/* Indicador de carregamento */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(74, 144, 226, 0.3);
+  border-radius: 50%;
+  border-top-color: #4a90e2;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Lista vazia */
+.empty-list {
+  padding: 40px;
+  text-align: center;
+  color: #6c757d;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .data-list {
+    display: block;
+  }
+
+  .data-list-header {
+    display: none; /* Oculta o cabeçalho em telas pequenas */
+  }
+
+  .data-row {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+  }
+
+  .data-cell {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e9ecef;
+  }
+
+  .data-cell:last-child {
+    border-bottom: none;
+  }
+
+  .data-cell:before {
+    content: attr(data-label);
+    font-weight: 600;
+    width: 120px;
+    min-width: 120px;
+  }
+
+  .data-cell.actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}

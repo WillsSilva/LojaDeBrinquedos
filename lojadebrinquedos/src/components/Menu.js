@@ -1,113 +1,166 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+"use client"
 
-const Menu = () => {
-  const navigate = useNavigate();
-  const [role, setRole] = useState(null);
+import { useEffect, useState } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import "../css/Menu.css"
+
+const Menu = ({ children }) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [role, setRole] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const userRole = localStorage.getItem("role");
+    // Verificar se o menu já foi carregado nesta sessão
+    const menuLoaded = sessionStorage.getItem("menuLoaded")
 
-    if (userRole) {
-      setRole(userRole);
+    if (menuLoaded) {
+      // Se já foi carregado, apenas obter a role sem mostrar o loading
+      const userRole = localStorage.getItem("role")
+      if (userRole) {
+        setRole(userRole)
+      } else {
+        console.warn("Nenhuma role encontrada! Definindo como 'caixa' por padrão.")
+        setRole("caixa")
+      }
+      setIsLoading(false)
     } else {
-      console.warn("Nenhuma role encontrada! Definindo como 'caixa' por padrão.");
-      setRole("caixa");
+      // Primeira vez carregando o menu nesta sessão
+      const timer = setTimeout(() => {
+        const userRole = localStorage.getItem("role")
+        if (userRole) {
+          setRole(userRole)
+        } else {
+          console.warn("Nenhuma role encontrada! Definindo como 'caixa' por padrão.")
+          setRole("caixa")
+        }
+
+        // Marcar o menu como carregado para esta sessão
+        sessionStorage.setItem("menuLoaded", "true")
+        setIsLoading(false)
+      }, 500)
+
+      return () => clearTimeout(timer)
     }
-  }, []);
+  }, [])
 
   // Função de logout
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
+    localStorage.removeItem("token")
+    localStorage.removeItem("role")
+    // Limpar também o estado de menu carregado
+    sessionStorage.removeItem("menuLoaded")
+    navigate("/login")
+  }
 
-  // Definição dos menus por cargo
+  // Definição dos menus por cargo com ícones
   const menus = {
     gerente: [
-      { name: "Gestão de Funcionários", path: "/funcionarios" },
-      { name: "Cadastrar Funcionario", path: "/cadastro/funcionario" },
+      { name: "Gestão de Funcionários", path: "/funcionarios", icon: "👥" },
+      { name: "Cadastrar Funcionario", path: "/cadastro/funcionario", icon: "➕" },
     ],
     Almoxarife: [
-      { name: "Lista de brinquedos", path: "/brinquedos" },
-      { name: "Tipos de brinquedos", path: "/tipos" },
-      { name: "Cadastrar brinquedos", path: "/cadastro/brinquedo" },
-      { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo" },
+      { name: "Lista de brinquedos", path: "/brinquedos", icon: "🧸" },
+      { name: "Tipos de brinquedos", path: "/tipos", icon: "🏷️" },
+      { name: "Cadastrar brinquedos", path: "/cadastro/brinquedo", icon: "➕" },
+      { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo", icon: "🔖" },
     ],
     AnalistadeCadastro: [
-      { name: "Lista de clientes", path: "/clientes" },
-      { name: "Cadastrar clientes", path: "/cadastrar-cliente" },
+      { name: "Lista de clientes", path: "/clientes", icon: "👥" },
+      { name: "Cadastrar clientes", path: "/cadastrar-cliente", icon: "➕" },
     ],
     AgenteDeLocacao: [
-      { name: "Lista de locações", path: "/vendas" },
-      { name: "Cadastrar locações", path: "/vendas" },
+      { name: "Lista de locações", path: "/vendas", icon: "📋" },
+      { name: "Cadastrar locações", path: "/vendas", icon: "➕" },
     ],
-    Caixa: [
-      { name: "Vendas", path: "/vendas" },
-    ],
-  };
+    Caixa: [{ name: "Vendas", path: "/vendas", icon: "💰" }],
+  }
 
-  if (role === null) {
-    return <h1>Carregando menu...</h1>;
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Carregando menu...</p>
+      </div>
+    )
   }
 
   if (!menus[role]) {
-    return <h1>Erro: Role não reconhecida !</h1>;
+    return (
+      <div className="error-container">
+        <div className="error-icon">⚠️</div>
+        <h2>Erro: Role não reconhecida!</h2>
+        <p>A função "{role}" não possui permissões configuradas no sistema.</p>
+        <button className="error-button" onClick={handleLogout}>
+          Voltar para o Login
+        </button>
+      </div>
+    )
   }
 
+  // Verifica se estamos na página inicial (menu)
+  const isHomePage = location.pathname === "/menu"
+
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div className="dashboard-container">
       {/* Sidebar */}
-      <div style={{
-        width: "250px",
-        background: "#2c3e50",
-        color: "white",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-      }}>
-        <h3>Menu </h3>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
-          {menus[role].map((menu, index) => (
-            <li
-              key={index}
-              onClick={() => navigate(menu.path)}
-              style={{
-                cursor: "pointer",
-                padding: "10px",
-                marginBottom: "10px",
-                background: "#34495e",
-                borderRadius: "5px",
-                color: "white",
-              }}
-            >
-              {menu.name}
-            </li>
-          ))}
-        </ul>
-        <button
-          onClick={handleLogout}
-          style={{
-            marginTop: "20px",
-            backgroundColor: "#e74c3c",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h3 className="sidebar-title">Painel de Controle</h3>
+          <div className="user-role">
+            <span className="role-badge">{role}</span>
+          </div>
+        </div>
+
+        <div className="sidebar-menu">
+          <h4 className="menu-category">Menu Principal</h4>
+          <ul className="menu-list">
+            {menus[role].map((menu, index) => (
+              <li
+                key={index}
+                className={`menu-item ${location.pathname === menu.path ? "active" : ""}`}
+                onClick={() => navigate(menu.path)}
+              >
+                <span className="menu-icon">{menu.icon}</span>
+                <span className="menu-text">{menu.name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="sidebar-footer">
+          <button className="logout-button" onClick={handleLogout}>
+            <span className="logout-icon">🚪</span>
+            <span>Sair do Sistema</span>
+          </button>
+        </div>
       </div>
 
       {/* Main content */}
-      <div style={{ flexGrow: 1, padding: "20px" }}>
-        {/* Este é o conteúdo da página que será renderizado ao lado do menu */}
+      <div className="main-content">
+        {isHomePage ? (
+          // Conteúdo de boas-vindas apenas na página inicial
+          <>
+            <div className="content-header">
+              <h2>Bem-vindo ao Sistema</h2>
+              <p>Selecione uma opção no menu para começar</p>
+            </div>
+
+            <div className="content-body">
+              <div className="welcome-card">
+                <div className="welcome-icon">👋</div>
+                <h3>Olá, {role}!</h3>
+                <p>Utilize o menu lateral para navegar entre as funcionalidades disponíveis para o seu perfil.</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          // Nas outras páginas, renderiza o conteúdo específico da rota
+          children || <div className="content-placeholder"></div>
+        )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Menu;
+export default Menu
