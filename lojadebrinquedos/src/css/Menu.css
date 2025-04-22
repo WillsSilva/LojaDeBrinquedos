@@ -35,9 +35,10 @@
   }
   
   .sidebar-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ecf0f1;
+    margin-bottom: 10px;
   }
   
   .user-role {
@@ -45,13 +46,10 @@
   }
   
   .role-badge {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 4px 10px;
+    background-color: #16a085;
+    padding: 5px 10px;
     border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
+    font-size: 14px;
   }
   
   .sidebar-menu {

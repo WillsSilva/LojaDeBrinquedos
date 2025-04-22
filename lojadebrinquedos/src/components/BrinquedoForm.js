@@ -1,153 +1,237 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import {
   criarBrinquedo,
   atualizarBrinquedo,
-  obterBrinquedoPorId
-} from "../API/APIBrinquedos";
-import { listarTiposBrinquedos } from "../API/APITiposBrinquedos";
-import Menu from "./Menu";
+  obterBrinquedoPorId,
+} from "../API/APIBrinquedos"
+import { listarTiposBrinquedos } from "../API/APITiposBrinquedos"
+import Menu from "./Menu"
+import "../css/Form.css"
 
 const BrinquedoForm = ({ token }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const navigate = useNavigate()
   const [brinquedo, setBrinquedo] = useState({
     nome: "",
     tipoBrinquedo: "",
     marca: "",
     dataAquisicao: "",
-    vlLocacao: ""
-  });
-  const [tiposBrinquedos, setTiposBrinquedos] = useState([]);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+    vlLocacao: "",
+  })
+  const [tiposBrinquedos, setTiposBrinquedos] = useState([])
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
     const fetchTiposBrinquedos = async () => {
       try {
-        const data = await listarTiposBrinquedos(token);
-        setTiposBrinquedos(data);
+        const data = await listarTiposBrinquedos(token)
+        setTiposBrinquedos(data)
       } catch (err) {
-        setError("Erro ao carregar tipos de brinquedos");
+        setError("Erro ao carregar tipos de brinquedos")
       }
-    };
-    fetchTiposBrinquedos();
-  }, [token]);
+    }
+    fetchTiposBrinquedos()
+  }, [token])
 
-  // Carregar brinquedo para edição
   useEffect(() => {
     if (id) {
       const fetchBrinquedo = async () => {
         try {
-          const data = await obterBrinquedoPorId(id, token);
-          if (data && data.dataAquisicao) {
-            data.dataAquisicao = data.dataAquisicao.split("T")[0];
+          const data = await obterBrinquedoPorId(id, token)
+          if (data?.dataAquisicao) {
+            data.dataAquisicao = data.dataAquisicao.split("T")[0]
           }
-          setBrinquedo(data);
+          data.vlLocacao = formatarMoeda(data.vlLocacao.toString())
+          setBrinquedo(data)
         } catch (err) {
-          console.error("Erro ao carregar brinquedo:", err);
+          setError("Erro ao carregar brinquedo")
         }
-      };
-      fetchBrinquedo();
+      }
+      fetchBrinquedo()
     }
-  }, [id, token]);
+  }, [id, token])
 
-  // Manipular campos do formulário
+  const formatarMoeda = (valor) => {
+    if (!valor) return ""
+    const numero = parseFloat(valor.replace(/[^\d]/g, "")) / 100
+    return numero.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })
+  }
+
   const handleChange = (e) => {
-    let { name, value } = e.target;
-  
+    let { name, value } = e.target
     if (name === "dataAquisicao") {
-      value = value.split("T")[0];
+      value = value.split("T")[0]
     }
-  
-    setBrinquedo({ ...brinquedo, [name]: value });
-  };
 
-  // Manipular seleção do tipo de brinquedo
+    if (name === "vlLocacao") {
+      value = formatarMoeda(value)
+    }
+
+    setBrinquedo({ ...brinquedo, [name]: value })
+  }
+
   const handleTipoChange = (e) => {
-    const tipoSelecionado = tiposBrinquedos.find(tipo => tipo.ID === parseInt(e.target.value));
-    setBrinquedo({ ...brinquedo, tipoBrinquedo: tipoSelecionado.ID });
-  };
+    const tipoSelecionado = tiposBrinquedos.find((tipo) => tipo.ID === parseInt(e.target.value))
+    setBrinquedo({ ...brinquedo, tipoBrinquedo: tipoSelecionado?.ID || "" })
+  }
 
-  // Submeter formulário
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (!brinquedo.nome || !brinquedo.tipoBrinquedo || !brinquedo.marca || !brinquedo.dataAquisicao || !brinquedo.vlLocacao) {
-      setError("Todos os campos são obrigatórios.");
-      return;
+    const valoresNumericos = {
+      ...brinquedo,
+      vlLocacao: parseFloat(brinquedo.vlLocacao.replace(/[^\d]/g, "")) / 100,
     }
-    console.log(brinquedo);
+
+    if (
+      !valoresNumericos.nome ||
+      !valoresNumericos.tipoBrinquedo ||
+      !valoresNumericos.marca ||
+      !valoresNumericos.dataAquisicao ||
+      !valoresNumericos.vlLocacao
+    ) {
+      setError("Todos os campos são obrigatórios.")
+      return
+    }
+
     try {
       if (id) {
-        await atualizarBrinquedo(id, token, brinquedo);
-        setMessage("Brinquedo atualizado com sucesso!");
+        await atualizarBrinquedo(id, token, valoresNumericos)
+        setMessage("Brinquedo atualizado com sucesso!")
       } else {
-        await criarBrinquedo(token, brinquedo);
-        setMessage("Brinquedo cadastrado com sucesso!");
-        setBrinquedo({ nome: "", tipoBrinquedo: "", marca: "", dataAquisicao: "", vlLocacao: "" });
+        await criarBrinquedo(token, valoresNumericos)
+        setMessage("Brinquedo cadastrado com sucesso!")
+        setBrinquedo({
+          nome: "",
+          tipoBrinquedo: "",
+          marca: "",
+          dataAquisicao: "",
+          vlLocacao: "",
+        })
       }
-      setError("");
-      setTimeout(() => navigate("/brinquedos"), 2000);
+
+      setError("")
+      setTimeout(() => navigate("/brinquedos"), 2000)
     } catch (err) {
-      setError(err.message);
-      setMessage("");
+      setError(err.message || "Erro ao processar solicitação")
+      setMessage("")
     }
-  };
+  }
+
+  const handleCancel = () => {
+    navigate("/brinquedos")
+  }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Menu />
-      <div style={{ flexGrow: 1, padding: "20px" }}>
-        <h2>{id ? "Editar Brinquedo" : "Cadastrar Brinquedo"}</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome do Brinquedo"
-            value={brinquedo.nome}
-            onChange={handleChange}
-            required
-          />
-          <select name="tipoBrinquedo" value={brinquedo.tipoBrinquedo} onChange={handleTipoChange} required>
-            <option value="">Selecione o Tipo</option>
-            {tiposBrinquedos.map((tipo) => (
-              <option key={tipo.ID} value={tipo.ID}>
-                {tipo.nome}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            name="marca"
-            placeholder="Marca"
-            value={brinquedo.marca}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="date"
-            name="dataAquisicao"
-            value={brinquedo.dataAquisicao}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="number"
-            name="vlLocacao"
-            placeholder="Valor da Locação"
-            value={brinquedo.vlLocacao}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">{id ? "Atualizar" : "Cadastrar"}</button>
-        </form>
+    <div className="page-container">
+      <Menu>
+        <div className="content-container">
+          <div className="content-header">
+            <h2>{id ? "Editar Brinquedo" : "Cadastrar Brinquedo"}</h2>
+          </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {message && <p style={{ color: "green" }}>{message}</p>}
-      </div>
+          <div className="form-container">
+            {error && (
+              <div className="message error">
+                <span className="message-icon">⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+
+            {message && (
+              <div className="message success">
+                <span className="message-icon">✅</span>
+                <span>{message}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="form">
+              <div className="form-group">
+                <label htmlFor="nome">Nome do Brinquedo</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  value={brinquedo.nome}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="tipoBrinquedo">Tipo de Brinquedo</label>
+                <select
+                  id="tipoBrinquedo"
+                  name="tipoBrinquedo"
+                  value={brinquedo.tipoBrinquedo}
+                  onChange={handleTipoChange}
+                  required
+                >
+                  <option value="">Selecione o Tipo</option>
+                  {tiposBrinquedos.map((tipo) => (
+                    <option key={tipo.ID} value={tipo.ID}>
+                      {tipo.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="marca">Marca</label>
+                <input
+                  type="text"
+                  id="marca"
+                  name="marca"
+                  value={brinquedo.marca}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="dataAquisicao">Data de Aquisição</label>
+                <input
+                  type="date"
+                  id="dataAquisicao"
+                  name="dataAquisicao"
+                  value={brinquedo.dataAquisicao}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="vlLocacao">Valor de Locação</label>
+                <input
+                  type="text"
+                  id="vlLocacao"
+                  name="vlLocacao"
+                  placeholder="R$ 0,00"
+                  value={brinquedo.vlLocacao}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="button secondary" onClick={handleCancel}>
+                  Cancelar
+                </button>
+                <button type="submit" className="button primary">
+                  {id ? "Atualizar" : "Cadastrar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Menu>
     </div>
-  );
-};
+  )
+}
 
-export default BrinquedoForm;
+export default BrinquedoForm

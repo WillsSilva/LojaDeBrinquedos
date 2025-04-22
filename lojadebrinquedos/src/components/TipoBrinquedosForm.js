@@ -1,112 +1,145 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { criarTipoBrinquedo, atualizarTipoBrinquedo, listarTiposBrinquedos, obterTipoBrinquedoPorId } from "../API/APITiposBrinquedos";
-import Menu from "./Menu";
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  criarTipoBrinquedo,
+  atualizarTipoBrinquedo,
+  listarTiposBrinquedos,
+  obterTipoBrinquedoPorId,
+} from "../API/APITiposBrinquedos"
+import Menu from "./Menu"
+import "../css/Form.css"
 
-const TipoBrinquedoForm = ({ token, userRole }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [tipoBrinquedo, setTipoBrinquedo] = useState({ nome: "" });
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [existingNomes, setExistingNomes] = useState([]);
+const TipoBrinquedoForm = ({ token }) => {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [tipoBrinquedo, setTipoBrinquedo] = useState({ nome: "" })
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const [existingNomes, setExistingNomes] = useState([])
 
-  // Carregar tipo de brinquedo para edição
   useEffect(() => {
     if (id) {
       const fetchTipoBrinquedo = async () => {
         try {
-          const data = await obterTipoBrinquedoPorId(id, token);
-          if (data && data.nome) {
-            setTipoBrinquedo(data);
+          const data = await obterTipoBrinquedoPorId(id, token)
+          if (data?.nome) {
+            setTipoBrinquedo(data)
           } else {
-            setError("Dados incompletos para edição");
+            setError("Dados incompletos para edição")
           }
         } catch (err) {
-          setError("Erro ao carregar tipo de brinquedo");
+          setError("Erro ao carregar tipo de brinquedo")
         }
-      };
-      fetchTipoBrinquedo();
+      }
+      fetchTipoBrinquedo()
     }
-  }, [id, token]);
+  }, [id, token])
 
-  // Carregar todos os nomes de tipos de brinquedos para evitar duplicidade
   useEffect(() => {
     const fetchNomes = async () => {
       try {
-        const data = await listarTiposBrinquedos(token);
-        setExistingNomes(data.map(tipo => tipo.nome));
+        const data = await listarTiposBrinquedos(token)
+        setExistingNomes(data.map((tipo) => tipo.nome))
       } catch (err) {
-        setError("Erro ao carregar lista de tipos de brinquedos");
+        setError("Erro ao carregar lista de tipos de brinquedos")
       }
-    };
+    }
 
-    fetchNomes();
-  }, [token]);
+    fetchNomes()
+  }, [token])
 
-  // Manipulação de campos do formulário
   const handleChange = (e) => {
-    setTipoBrinquedo({ ...tipoBrinquedo, [e.target.name]: e.target.value });
-  };
+    setTipoBrinquedo({ ...tipoBrinquedo, [e.target.name]: e.target.value })
+  }
 
-  const nomeExists = (nome) => existingNomes.includes(nome);
+  const nomeExists = (nome) => existingNomes.includes(nome)
 
-  // Submissão do formulário
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
+    e.preventDefault()
+
     if (!tipoBrinquedo.nome) {
-      setError("Por favor, preencha o nome do tipo de brinquedo.");
-      return;
+      setError("Por favor, preencha o nome do tipo de brinquedo.")
+      return
     }
-  
+
     if (nomeExists(tipoBrinquedo.nome) && tipoBrinquedo.nome !== (id ? tipoBrinquedo.nome : "")) {
-      setError("Esse tipo de brinquedo já está cadastrado.");
-      return;
+      setError("Esse tipo de brinquedo já está cadastrado.")
+      return
     }
-  
+
     try {
       if (id) {
-        await atualizarTipoBrinquedo(id, token, tipoBrinquedo);
-        setMessage("Tipo de brinquedo atualizado com sucesso!");
+        await atualizarTipoBrinquedo(id, token, tipoBrinquedo)
+        setMessage("Tipo de brinquedo atualizado com sucesso!")
       } else {
-        await criarTipoBrinquedo(token, tipoBrinquedo);
-        setMessage("Tipo de brinquedo cadastrado com sucesso!");
-        setTipoBrinquedo({ nome: "" });
+        await criarTipoBrinquedo(token, tipoBrinquedo)
+        setMessage("Tipo de brinquedo cadastrado com sucesso!")
+        setTipoBrinquedo({ nome: "" })
       }
-      setError("");
-      setTimeout(() => navigate("/tipos"), 2000);
+
+      setError("")
+      setTimeout(() => navigate("/tipos"), 2000)
     } catch (err) {
-      setError(err.message);
-      setMessage("");
+      setError(err.message || "Erro ao processar solicitação")
+      setMessage("")
     }
-  };
-  
+  }
+
+  const handleCancel = () => {
+    navigate("/tipos")
+  }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Menu />
+    <div className="page-container">
+      <Menu>
+        <div className="content-container">
+          <div className="content-header">
+            <h2>{id ? "Editar Tipo de Brinquedo" : "Cadastrar Tipo de Brinquedo"}</h2>
+          </div>
 
-      <div style={{ flexGrow: 1, padding: "20px" }}>
-        <h2>{id ? "Editar Tipo de Brinquedo" : "Cadastrar Tipo de Brinquedo"}</h2>
+          <div className="form-container">
+            {error && (
+              <div className="message error">
+                <span className="message-icon">⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="nome"
-              placeholder="Nome do Tipo"
-              value={tipoBrinquedo.nome || ""}
-              onChange={handleChange}
-              required
-            />
-            <button type="submit">{id ? "Atualizar" : "Cadastrar"}</button>
-          </form>
+            {message && (
+              <div className="message success">
+                <span className="message-icon">✅</span>
+                <span>{message}</span>
+              </div>
+            )}
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {message && <p style={{ color: "green" }}>{message}</p>}
-      </div>
+            <form onSubmit={handleSubmit} className="form">
+              <div className="form-group">
+                <label htmlFor="nome">Nome do Tipo</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  placeholder="Ex: Educativo, Eletrônico..."
+                  value={tipoBrinquedo.nome || ""}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="button secondary" onClick={handleCancel}>
+                  Cancelar
+                </button>
+                <button type="submit" className="button primary">
+                  {id ? "Atualizar" : "Cadastrar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Menu>
     </div>
-  );
-};
+  )
+}
 
-export default TipoBrinquedoForm;
+export default TipoBrinquedoForm

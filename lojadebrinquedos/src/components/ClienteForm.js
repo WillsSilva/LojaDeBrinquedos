@@ -1,151 +1,224 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { criarCliente, atualizarCliente, obterClientePorId, listarClientes } from '../API/APIClientes';
-import Menu from './Menu';
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  criarCliente,
+  atualizarCliente,
+  obterClientePorId,
+  listarClientes,
+} from "../API/APIClientes"
+import Menu from "./Menu"
+import "../css/Form.css"
 
 const ClienteForm = ({ token }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const navigate = useNavigate()
   const [cliente, setCliente] = useState({
-    cpf: '',
-    nome: '',
-    endereco: '',
-    dataNasc: '',
-    telefone: '',
-  });
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const [existingCPFs, setExistingCPFs] = useState([]);
+    cpf: "",
+    nome: "",
+    endereco: "",
+    dataNasc: "",
+    telefone: "",
+  })
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const [existingCPFs, setExistingCPFs] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Buscar cliente para edição
+  // Carregar cliente (se edição)
   useEffect(() => {
     if (id) {
       const fetchCliente = async () => {
+        setIsLoading(true)
         try {
-          const data = await obterClientePorId(id, token);
-          if (data && data.cpf && data.nome && data.endereco && data.dataNasc && data.telefone) {
-            // Formata a data para o input date
-            setCliente({ ...data, dataNasc: data.dataNasc.split('T')[0] });
+          const data = await obterClientePorId(id, token)
+          if (data?.cpf && data?.nome && data?.endereco && data?.dataNasc && data?.telefone) {
+            setCliente({ ...data, dataNasc: data.dataNasc.split("T")[0] })
           } else {
-            setError('Dados incompletos para edição');
+            setError("Dados incompletos para edição")
           }
         } catch (err) {
-          setError('Erro ao carregar cliente');
+          setError("Erro ao carregar cliente")
+        } finally {
+          setIsLoading(false)
         }
-      };
-      fetchCliente();
+      }
+      fetchCliente()
     }
-  }, [id, token]);
+  }, [id, token])
 
-  // Buscar todos os CPFs existentes
+  // CPFs existentes (validação)
   useEffect(() => {
     const fetchCPFs = async () => {
       try {
-        const data = await listarClientes(token);
-        setExistingCPFs(data.map(cli => cli.cpf));
+        const data = await listarClientes(token)
+        setExistingCPFs(data.map((cli) => cli.cpf))
       } catch (err) {
-        setError('Erro ao carregar lista de clientes');
+        setError("Erro ao carregar lista de clientes")
       }
-    };
+    }
 
-    fetchCPFs();
-  }, [token]);
+    fetchCPFs()
+  }, [token])
 
-  // Manipular mudanças nos inputs
   const handleChange = (e) => {
-    setCliente({ ...cliente, [e.target.name]: e.target.value });
-  };
+    setCliente({ ...cliente, [e.target.name]: e.target.value })
+  }
 
-  const cpfExists = (cpf) => {
-    return existingCPFs.includes(cpf);
-  };
+  const cpfExists = (cpf) => existingCPFs.includes(cpf)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    setError("")
+    setMessage("")
 
-    const { cpf, nome, endereco, dataNasc, telefone } = cliente;
+    const { cpf, nome, endereco, dataNasc, telefone } = cliente
 
     if (!cpf || !nome || !endereco || !dataNasc || !telefone) {
-      setError("Por favor, preencha todos os campos.");
-      return;
+      setError("Por favor, preencha todos os campos.")
+      return
     }
 
     if (cpfExists(cpf) && !id) {
-      setError("CPF já cadastrado.");
-      return;
+      setError("CPF já cadastrado.")
+      return
     }
 
+    setIsLoading(true)
     try {
       if (id) {
-        await atualizarCliente(id, token, cliente);
-        setMessage('Cliente atualizado com sucesso!');
+        await atualizarCliente(id, token, cliente)
+        setMessage("Cliente atualizado com sucesso!")
       } else {
-        await criarCliente(token, cliente);
-        setMessage('Cliente cadastrado com sucesso!');
-        setCliente({ cpf: '', nome: '', endereco: '', dataNasc: '', telefone: '' });
+        await criarCliente(token, cliente)
+        setMessage("Cliente cadastrado com sucesso!")
+        setCliente({ cpf: "", nome: "", endereco: "", dataNasc: "", telefone: "" })
       }
 
-      setError('');
-      setTimeout(() => navigate('/clientes'), 2000);
+      setTimeout(() => navigate("/clientes"), 2000)
     } catch (err) {
-      setError(err.message);
-      setMessage('');
+      setError(err.message || "Erro ao processar solicitação")
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
+
+  const handleCancel = () => {
+    navigate("/clientes")
+  }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Menu />
-      <div style={{ flexGrow: 1, padding: '20px' }}>
-        <h2>{id ? 'Editar Cliente' : 'Cadastrar Cliente'}</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="cpf"
-            placeholder="CPF"
-            value={cliente.cpf}
-            onChange={handleChange}
-            required
-            disabled={!!id}
-          />
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome"
-            value={cliente.nome}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="endereco"
-            placeholder="Endereço"
-            value={cliente.endereco}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="date"
-            name="dataNasc"
-            value={cliente.dataNasc}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="telefone"
-            placeholder="Telefone"
-            value={cliente.telefone}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">{id ? 'Atualizar' : 'Cadastrar'}</button>
-        </form>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {message && <p style={{ color: 'green' }}>{message}</p>}
-      </div>
-    </div>
-  );
-};
+    <div className="page-container">
+      <Menu>
+        <div className="content-container">
+          <div className="content-header">
+            <h2>{id ? "Editar Cliente" : "Cadastrar Cliente"}</h2>
+          </div>
 
-export default ClienteForm;
+          {isLoading && !id ? (
+            <div className="loading-indicator">
+              <div className="spinner"></div>
+              <p>Carregando...</p>
+            </div>
+          ) : (
+            <div className="form-container">
+              {error && (
+                <div className="message error">
+                  <span className="message-icon">⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {message && (
+                <div className="message success">
+                  <span className="message-icon">✅</span>
+                  <span>{message}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="form">
+                <div className="form-group">
+                  <label htmlFor="cpf">CPF</label>
+                  <input
+                    type="text"
+                    id="cpf"
+                    name="cpf"
+                    value={cliente.cpf}
+                    onChange={handleChange}
+                    required
+                    disabled={!!id}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="nome">Nome</label>
+                  <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value={cliente.nome}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="endereco">Endereço</label>
+                  <input
+                    type="text"
+                    id="endereco"
+                    name="endereco"
+                    value={cliente.endereco}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="dataNasc">Data de Nascimento</label>
+                  <input
+                    type="date"
+                    id="dataNasc"
+                    name="dataNasc"
+                    value={cliente.dataNasc}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="telefone">Telefone</label>
+                  <input
+                    type="text"
+                    id="telefone"
+                    name="telefone"
+                    value={cliente.telefone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" className="button secondary" onClick={handleCancel}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="button primary" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <span className="spinner-small"></span>
+                        <span>{id ? "Atualizando..." : "Cadastrando..."}</span>
+                      </>
+                    ) : (
+                      <span>{id ? "Atualizar" : "Cadastrar"}</span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+      </Menu>
+    </div>
+  )
+}
+
+export default ClienteForm

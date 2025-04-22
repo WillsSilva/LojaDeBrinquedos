@@ -80,12 +80,12 @@
 /* Definição de larguras específicas para colunas comuns */
 .data-list-header .data-cell:nth-child(1),
 .data-row .data-cell:nth-child(1) {
-  width: 10%; /* Código/ID */
+  width: 30%; /* Código/ID */
 }
 
 .data-list-header .data-cell:nth-child(2),
 .data-row .data-cell:nth-child(2) {
-  width: 25%; /* Nome */
+  width: 20%; /* Nome */
 }
 
 /* Célula de ações */
