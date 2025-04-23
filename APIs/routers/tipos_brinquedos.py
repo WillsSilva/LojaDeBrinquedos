@@ -10,7 +10,7 @@ router = APIRouter()
 # Criar um tipo de brinquedo (apenas almoxarifes)
 @router.post("/")
 def criar_tipo_brinquedo(tipo: TipoBrinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:    
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem cadastrar tipos de brinquedos")
 
     if db.tipos_brinquedos.find_one({"nome": tipo.nome}):
@@ -30,7 +30,7 @@ def criar_tipo_brinquedo(tipo: TipoBrinquedo, user: dict = Depends(get_current_u
 # Atualizar um tipo de brinquedo (apenas almoxarifes)
 @router.put("/{id}")
 def atualizar_tipo_brinquedo(id: str, tipo: TipoBrinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem atualizar tipos de brinquedos")
 
     existing_tipo = db.tipos_brinquedos.find_one({"ID": int(id)})
@@ -50,7 +50,7 @@ def listar_tipos_brinquedos(user: dict = Depends(get_current_user)):
 # Deletar um tipo de brinquedo (apenas almoxarifes)
 @router.delete("/{id}")
 def deletar_tipo_brinquedo(id: str, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem deletar tipos de brinquedos")
 
     existing_tipo = db.tipos_brinquedos.find_one({"ID": int(id)})

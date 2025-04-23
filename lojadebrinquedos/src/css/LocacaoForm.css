@@ -1,0 +1,174 @@
+/* Estilos específicos para o formulário de locação */
+
+.locacao-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Layout de duas colunas */
+  .locacao-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  /* Formulário principal */
+  .locacao-form {
+    border-right: 1px solid #e9ecef;
+    padding-right: 24px;
+  }
+  
+  /* Estilo para o campo de adicionar brinquedo */
+  .add-brinquedo-row {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .add-brinquedo-row select {
+    flex: 1;
+  }
+  
+  /* Lista de brinquedos selecionados */
+  .brinquedos-selecionados {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .brinquedos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .brinquedos-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+  }
+  
+  .brinquedos-count {
+    background-color: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #495057;
+  }
+  
+  .brinquedos-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+    margin-bottom: 16px;
+  }
+  
+  .brinquedo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.1s;
+  }
+  
+  .brinquedo-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .brinquedo-info {
+    flex: 1;
+  }
+  
+  .brinquedo-nome {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  .brinquedo-valor {
+    font-size: 14px;
+    color: #495057;
+  }
+  
+  .brinquedos-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+    font-weight: 600;
+  }
+  
+  .total-value {
+    font-size: 18px;
+    color: #2c3e50;
+  }
+  
+  /* Mensagem de lista vazia */
+  .empty-list-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #ced4da;
+    height: 200px;
+  }
+  
+  .empty-list-hint {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #adb5bd;
+  }
+  
+  /* Estilos para campos vazios */
+  select.empty {
+    color: #6c757d;
+  }
+  
+  /* Botão pequeno */
+  .button.small {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  /* Estilos para dicas e informações */
+  .form-hint {
+    display: block;
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+  
+  .info-badge {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 14px;
+    cursor: help;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 992px) {
+    .locacao-layout {
+      grid-template-columns: 1fr;
+    }
+  
+    .locacao-form {
+      border-right: none;
+      padding-right: 0;
+      border-bottom: 1px solid #e9ecef;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+  }
+  

@@ -9,7 +9,7 @@ router = APIRouter()
 # Rota para criar um brinquedo (apenas almoxarifes)
 @router.post("/")
 def criar_brinquedo(brinquedo: Brinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem cadastrar brinquedos")
 
     ultimo_brinquedo = db.brinquedos.find_one(sort=[("ID", -1)])
@@ -26,7 +26,7 @@ def criar_brinquedo(brinquedo: Brinquedo, user: dict = Depends(get_current_user)
 # Rota para atualizar um brinquedo (apenas almoxarifes)
 @router.put("/{id}")
 def atualizar_brinquedo(id: str, brinquedo: Brinquedo, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem atualizar brinquedos")
 
     existing_brinquedo = db.brinquedos.find_one({"ID": int(id)})
@@ -51,7 +51,7 @@ def obter_brinquedo(id: str, user: dict = Depends(get_current_user)):
 
 @router.delete("/{id}")
 def deletar_brinquedo(id: str, user: dict = Depends(get_current_user)):
-    if user["role"] != "Almoxarife":
+    if user["role"] not in ["Almoxarife", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas almoxarifes podem deletar tipos de brinquedos")
 
     existing_brinquedo = db.brinquedos.find_one({"ID": int(id)})

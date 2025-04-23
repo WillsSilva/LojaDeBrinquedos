@@ -9,7 +9,7 @@ router = APIRouter()
 # Rota protegida: Apenas gerentes podem cadastrar clientes
 @router.post("/")
 def criar_cliente(cliente: Cliente, user: dict = Depends(get_current_user)):
-    if user["role"] != "AnalistadeCadastro":
+    if user["role"] not in ["AnalistadeCadastro", "admin"]:        
         raise HTTPException(status_code=403, detail="Apenas gerentes podem cadastrar clientes")
 
     # Verificar se já existe um usuário com o mesmo cpf
@@ -25,7 +25,7 @@ def criar_cliente(cliente: Cliente, user: dict = Depends(get_current_user)):
 @router.put("/{id}")
 def atualizar_cliente(id: str, cliente: ClienteUpdate, user: dict = Depends(get_current_user)):
     
-    if user["role"] != "AnalistadeCadastro":
+    if user["role"] not in ["AnalistadeCadastro", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas gerentes podem atualizar clientes")
 
     # Verificar se o cliente existe no banco de dados
@@ -47,7 +47,7 @@ def atualizar_cliente(id: str, cliente: ClienteUpdate, user: dict = Depends(get_
 
 @router.delete("/{id}")
 def deletar_cliente(id: str, user: dict = Depends(get_current_user)):
-    if user.get("role") != "AnalistadeCadastro":
+    if user["role"] not in ["AnalistadeCadastro", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas o Analista de Cadastro pode excluir clientes")
 
     cliente = db.clientes.find_one({"cpf": str(id)})

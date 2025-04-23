@@ -9,7 +9,7 @@ router = APIRouter()
 # Rota protegida: Apenas gerentes podem cadastrar funcionários
 @router.post("/")
 def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current_user)):
-    if user["role"] != "gerente":
+    if user["role"] not in ["gerente", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas gerentes podem cadastrar funcionários")
 
     # Verificar se já existe um usuário com o mesmo username
@@ -26,7 +26,7 @@ def criar_funcionario(funcionario: Funcionario, user: dict = Depends(get_current
 @router.put("/{id}")
 def atualizar_funcionario(id: str, funcionario: FuncionarioUpdate, user: dict = Depends(get_current_user)):
     
-    if user["role"] != "gerente":
+    if user["role"] not in ["gerente", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas gerentes podem atualizar funcionários")
 
     # Verificar se o funcionário existe no banco de dados
@@ -53,7 +53,7 @@ def atualizar_funcionario(id: str, funcionario: FuncionarioUpdate, user: dict = 
 @router.delete("/{id}")
 def deletar_funcionario(id: str, user: dict = Depends(get_current_user)):
 
-    if user.get("role") != "gerente":
+    if user["role"] not in ["gerente", "admin"]:
         raise HTTPException(status_code=403, detail="Apenas gerentes podem excluir funcionários")
 
     funcionario = db.funcionarios.find_one({"username": id})

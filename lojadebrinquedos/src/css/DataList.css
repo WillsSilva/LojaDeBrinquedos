@@ -83,6 +83,22 @@
   width: 30%; /* Código/ID */
 }
 
+/* Célula de dados */
+.data-cell-id {
+  display: table-cell;
+  padding: 8px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Definição de larguras específicas para colunas comuns */
+.data-list-header .data-cell:nth-child(1),
+.data-row .data-cell-id:nth-child(1) {
+  width: 6%; /* Código/ID */
+}
+
 .data-list-header .data-cell:nth-child(2),
 .data-row .data-cell:nth-child(2) {
   width: 20%; /* Nome */
@@ -90,7 +106,7 @@
 
 /* Célula de ações */
 .data-cell.actions {
-  width: 15%;
+  width: 18%;
   text-align: right;
   white-space: nowrap;
 }

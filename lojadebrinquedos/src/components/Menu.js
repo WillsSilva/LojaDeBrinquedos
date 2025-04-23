@@ -11,11 +11,9 @@ const Menu = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Verificar se o menu já foi carregado nesta sessão
     const menuLoaded = sessionStorage.getItem("menuLoaded")
 
     if (menuLoaded) {
-      // Se já foi carregado, apenas obter a role sem mostrar o loading
       const userRole = localStorage.getItem("role")
       if (userRole) {
         setRole(userRole)
@@ -25,7 +23,6 @@ const Menu = ({ children }) => {
       }
       setIsLoading(false)
     } else {
-      // Primeira vez carregando o menu nesta sessão
       const timer = setTimeout(() => {
         const userRole = localStorage.getItem("role")
         if (userRole) {
@@ -35,7 +32,6 @@ const Menu = ({ children }) => {
           setRole("caixa")
         }
 
-        // Marcar o menu como carregado para esta sessão
         sessionStorage.setItem("menuLoaded", "true")
         setIsLoading(false)
       }, 500)
@@ -48,7 +44,7 @@ const Menu = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("role")
-    // Limpar também o estado de menu carregado
+
     sessionStorage.removeItem("menuLoaded")
     navigate("/login")
   }
@@ -70,10 +66,25 @@ const Menu = ({ children }) => {
       { name: "Cadastrar clientes", path: "/cadastrar-cliente", icon: "➕" },
     ],
     AgenteDeLocacao: [
-      { name: "Lista de locações", path: "/vendas", icon: "📋" },
-      { name: "Cadastrar locações", path: "/vendas", icon: "➕" },
+      { name: "Lista de locações", path: "/locacoes", icon: "📋" },
+      { name: "Cadastrar locações", path: "/cadastrar-locacao", icon: "➕" },
     ],
-    Caixa: [{ name: "Vendas", path: "/vendas", icon: "💰" }],
+    Caixa: [
+      { name: "Pagamentos", path: "/pagamentos", icon: "💳" },
+      { name: "Cadastrar pagamentos", path: "/cadastrar-pagamento", icon: "➕" },],
+    admin: [
+      { name: "Gestão de Funcionários", path: "/funcionarios", icon: "👥" },
+      { name: "Cadastrar Funcionario", path: "/cadastro/funcionario", icon: "➕" },
+      { name: "Lista de brinquedos", path: "/brinquedos", icon: "🧸" },
+      { name: "Tipos de brinquedos", path: "/tipos", icon: "🏷️" },
+      { name: "Cadastrar brinquedos", path: "/cadastro/brinquedo", icon: "➕" },
+      { name: "Cadastrar tipos de brinquedos", path: "/cadastro/tipo", icon: "🔖" },
+      { name: "Lista de clientes", path: "/clientes", icon: "👥" },
+      { name: "Cadastrar clientes", path: "/cadastrar-cliente", icon: "➕" },
+      { name: "Lista de locações", path: "/locacoes", icon: "📋" },
+      { name: "Cadastrar locações", path: "/cadastrar-locacao", icon: "➕" },
+      { name: "Pagamentos", path: "/pagamentos", icon: "💳" },
+      { name: "Cadastrar pagamentos", path: "/cadastrar-pagamento", icon: "➕" },],      
   }
 
   if (isLoading) {
