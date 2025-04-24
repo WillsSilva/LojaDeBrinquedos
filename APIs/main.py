@@ -6,7 +6,7 @@ from core.startup import criar_usuario_admin_padrao
 app = FastAPI()
 criar_usuario_admin_padrao()
 
-origins = ["http://localhost:3000"]
+origins = ["http://locabrinquedos.duckdns.org:3000"]
 
 app.add_middleware(
     CORSMiddleware,

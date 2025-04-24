@@ -37,7 +37,7 @@ export const listarFuncionarios = async (token) => {
 
 // Função para criar um novo funcionário
 export const criarFuncionario = async (token, funcionario) => {
-  const response = await fetch('http://localhost:8000/funcionarios/', {
+  const response = await fetch('http://locabrinquedos.duckdns.org:8000/funcionarios/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const criarFuncionario = async (token, funcionario) => {
 };
 
 export const getFuncionarios = async () => {
-  const response = await fetch('http://localhost:8000/funcionarios/');
+  const response = await fetch('http://locabrinquedos.duckdns.org:8000/funcionarios/');
   if (!response.ok) {
     throw new Error('Erro ao carregar os funcionários');
   }
@@ -70,7 +70,7 @@ export const deleteFuncionario = async (id, token) => {
   try {
     console.log(localStorage.getItem("token"));
 
-    const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+    const response = await fetch(`http://locabrinquedos.duckdns.org:8000/funcionarios/${id}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -92,7 +92,7 @@ export const deleteFuncionario = async (id, token) => {
 };
 
 export const atualizarFuncionario = async (id, token, funcionario) => {
-  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+  const response = await fetch(`http://locabrinquedos.duckdns.org:8000/funcionarios/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export const atualizarFuncionario = async (id, token, funcionario) => {
 };
 
 export const obterFuncionarioPorId = async (id, token) => {
-  const response = await fetch(`http://localhost:8000/funcionarios/${id}`, {
+  const response = await fetch(`http://locabrinquedos.duckdns.org:8000/funcionarios/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
