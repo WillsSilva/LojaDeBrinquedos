@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://locabrinquedos.duckdns.org:8000';
 
 // Listar clientes
 export const listarClientes = async (token) => {

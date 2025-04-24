@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/locacoes";
+const API_URL = "http://locabrinquedos.duckdns.org:8000/locacoes";
 
 // Criar Locação (múltiplos brinquedos em uma única locação)
 export const criarLocacao = async (token, locacao) => {

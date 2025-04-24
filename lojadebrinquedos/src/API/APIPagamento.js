@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/pagamentos";
+const API_URL = "http://locabrinquedos.duckdns.org:8000/pagamentos";
 
 // Criar Pagamento (apenas para usuários com papel "Caixa")
 export const criarPagamento = async (token, pagamento) => {
