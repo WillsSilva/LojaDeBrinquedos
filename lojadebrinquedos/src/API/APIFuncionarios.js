@@ -1,12 +1,12 @@
 // src/api.js
 import axios from 'axios';
 
-const API_URL = 'http://locabrinquedos.duckdns.org:8000';
+const API_URL = 'http://localhost:8000';
 
 // Função para realizar o login
 export const login = async (username, password) => {
   try {
-    const response = await axios.post('http://locabrinquedos.duckdns.org:8000/token', new URLSearchParams({
+    const response = await axios.post('http://localhost:8000/token', new URLSearchParams({
       username,
       password,
     }), {

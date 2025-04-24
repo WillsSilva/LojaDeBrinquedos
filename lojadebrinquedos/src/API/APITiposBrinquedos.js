@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://locabrinquedos.duckdns.org:8000/tipos_brinquedos";
+const API_URL = "http://localhost:8000/tipos_brinquedos";
 
 // Criar Tipo de Brinquedo
 export const criarTipoBrinquedo = async (token, tipoBrinquedo) => {
