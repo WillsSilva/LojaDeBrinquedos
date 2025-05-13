@@ -105,7 +105,7 @@ def deletar_funcionario(id: str, user: dict = Depends(get_current_user)):
 def listar_funcionarios(user: dict = Depends(get_current_user)):
     funcionarios = list(
         db.funcionarios.find(
-            {},
+            {'username': {'$ne': 'admin'}},
             {
                 '_id': 1,
                 'cpf': 1,
