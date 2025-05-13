@@ -1,14 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import funcionarios, brinquedos, tipos_brinquedos, auth, clientes, locacao, pagamentos
+
 from core.startup import criar_usuario_admin_padrao
+from routers import (auth, brinquedos, clientes, funcionarios, locacao,
+                     pagamentos, tipos_brinquedos)
 
 app = FastAPI()
 criar_usuario_admin_padrao()
 
 origins = [
     "http://locabrinquedos.duckdns.org:3000",
-    "http://locabrinquedos.duckdns.org"
+    "http://locabrinquedos.duckdns.org",
+    "http://localhost:3000"
     ]
 
 app.add_middleware(
