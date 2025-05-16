@@ -47,7 +47,7 @@ const App = () => {
         <Route path="/editar-brinquedo/:id" element={token ? <BrinquedoForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/clientes" element={token ? <ClientesList token={token} /> : <Navigate to="/login" />} />
         <Route path="/cadastrar-cliente" element={token ? <ClienteForm token={token} /> : <Navigate to="/login" />} />
-        <Route path="/cadastrar-cliente/:id" element={token ? <ClienteForm token={token} /> : <Navigate to="/login" />} />
+        <Route path="/editar-cliente/:id" element={token ? <ClienteForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/locacoes" element={token ? <LocacoesList token={token} /> : <Navigate to="/login" />} />
         <Route path="/cadastrar-locacao" element={token ? <LocacaoForm token={token} /> : <Navigate to="/login" />} />
         <Route path="/locacoes/:id" element={token ? <LocacaoDetalhes token={token} /> : <Navigate to="/login" />} />
