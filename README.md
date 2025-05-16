@@ -28,6 +28,10 @@ O frontend é responsável pela interface de usuário, permitindo aos funcionár
 
 ## Como Rodar o Projeto
 
+## Link para acessar
+
+http://locabrinquedos.duckdns.org/
+
 ### 1. **Pré-requisitos**
 
 - Python 3.x
