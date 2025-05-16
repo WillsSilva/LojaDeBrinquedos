@@ -39,12 +39,12 @@ def atualizar_cliente(
         )
 
     # Verificar se o cliente existe no banco de dados
-    existing_cliente = db.cliente.find_one({'cpf': id})
+    existing_cliente = db.clientes.find_one({'cpf': id})
     if not existing_cliente:
         raise HTTPException(status_code=404, detail='Cliente não encontrado')
 
     if cliente.cpf:
-        cliente_exists = db.cliente.find_one({'cpf': cliente.cpf})
+        cliente_exists = db.clientes.find_one({'cpf': cliente.cpf})
         if cliente_exists and cliente_exists['_id'] != cliente_exists['_id']:
             raise HTTPException(status_code=400, detail='CPF já está em uso')
 
