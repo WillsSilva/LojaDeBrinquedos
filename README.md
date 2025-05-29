@@ -52,6 +52,6 @@ cd lojadebrinquedos
 npm install
 npm start
 
-❗ Para começar cadastre um usuario com a role de gerente no seu banco de dados.
+❗ Para começar rode tudo e ele vai gerar automaticamente um usuario admin com senha 123
 
 
